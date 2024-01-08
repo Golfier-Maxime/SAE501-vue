@@ -7,7 +7,7 @@ const menuVisible = ref(true);
     <div class="bg-black flex justify-between">
       <div class="items-center">
         <router-link to="/">
-          <h1 class="text-white josefin text-[45px] ml-[45px]">TiK•TaK</h1>
+          <h1 class="text-white josefin text-[45px] ml-[45px]">TiK•TaK2</h1>
         </router-link>
       </div>
       <div
