@@ -40,7 +40,7 @@ export default {
       this.$refs.scene.appendChild(this.renderer.domElement);
 
       // Ajouter un cube à la scène
-      const geometry = new THREE.BoxGeometry();
+      const geometry = new THREE.BoxGeometry(2, 2, 2); // Modifier les dimensions ici
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
       this.cube = new THREE.Mesh(geometry, material);
       this.scene.add(this.cube);
