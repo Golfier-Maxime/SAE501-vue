@@ -1,117 +1,96 @@
-<template>
-  <div ref="scene"></div>
-</template>
-
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader.js";
 import * as THREE from "three";
-import { ColladaLoader } from "three/addons/loaders/ColladaLoader.js";
-import OrbitControls from "three-orbit-controls";
+const canvas = ref(null);
+var controls = null;
+var clock = new THREE.Clock();
+let scene = null;
+let camera = null;
+let cube = null;
+let renderer = null;
+let animationId = null;
 
-export default {
-  data() {
-    return {};
-  },
-  mounted() {
-    this.init();
-  },
-  methods: {
-    init() {
-      // Create a scene
-      const scene = new THREE.Scene();
+const initScene = () => {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  cube = new THREE.Mesh(geometry, material);
+  cube.position.x = 1;
+  cube.position.y = -1;
 
-      // Create a camera
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      camera.position.z = 100;
+  cube.rotation.x = 2;
 
-      // Create a renderer
-      const renderer = new THREE.WebGLRenderer();
-      renderer.setSize(1300, 700);
-      this.$refs.scene.appendChild(renderer.domElement);
+  // scene.add(cube)
 
-      // Load the DAE model
+  camera.position.z = 1;
 
-      const loader = new ColladaLoader();
-      loader.load("./models/montre.dae", (collada) => {
-        const daeModel = collada.scene;
+  renderer = new THREE.WebGLRenderer({ canvas: canvas.value });
+  renderer.setSize(1300, 700);
+  renderer.setClearColor(0x222222, 1);
+  controls = new OrbitControls(camera, renderer.domElement);
+  var pointLight = new THREE.PointLight(0xffffff, 1);
+  pointLight.position.set(0, 1, 0);
 
-        const boitierRond = daeModel.getObjectByName("boitier_rond");
-        boitierRond.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        // Add the "boitier_rond" object to the scene
-        scene.add(boitierRond);
-
-        const aiguilleSecondes = daeModel.getObjectByName("aiguille_secondes");
-        aiguilleSecondes.material = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
-        });
-        // Add the "aiguille_secondes" object to the scene
-        scene.add(aiguilleSecondes);
-
-        const iBouton = daeModel.getObjectByName("bouton");
-        iBouton.material = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
-        });
-        // Add the "bouton" object to the scene
-        scene.add(iBouton);
-
-        const aiguilleHeures = daeModel.getObjectByName("aiguille_heures");
-        aiguilleHeures.material = new THREE.MeshBasicMaterial({
-          color: 0xf0f0f0,
-        });
-        // Add the "aiguille_heures" object to the scene
-        scene.add(aiguilleHeures);
-
-        const aiguilleMinutes = daeModel.getObjectByName("aiguille_minutes");
-        aiguilleMinutes.material = new THREE.MeshBasicMaterial({
-          color: 0x0f0f0f,
-        });
-        // Add the "aiguille_minutes" object to the scene
-        scene.add(aiguilleMinutes);
-
-        const iPierre = daeModel.getObjectByName("pierre");
-        iPierre.material = new THREE.MeshBasicMaterial({
-          color: 0x0000ff,
-        });
-        // Add the "pierre" object to the scene
-        scene.add(iPierre);
-
-        const iBracelet = daeModel.getObjectByName("bracelet");
-        iBracelet.material = new THREE.MeshBasicMaterial({
-          color: 0x00f0ff,
-        });
-        // Add the "bracelet" object to the scene
-        scene.add(iBracelet);
-
-        const iFermoir = daeModel.getObjectByName("fermoir");
-        iFermoir.material = new THREE.MeshBasicMaterial({
-          color: 0xf000ff,
-        });
-        // Add the "fermoir" object to the scene
-        scene.add(iFermoir);
-      });
-
-      // Animation
-      const animate = () => {
-        requestAnimationFrame(animate);
-
-        // Render the scene
-        renderer.render(scene, camera);
-      };
-
-      // Start the animation
-      animate();
-    },
-  },
+  scene.add(pointLight);
+  clock.start();
+  var loader = new ColladaLoader();
+  loader.load("/models/montre.dae", onLoaded, onProgress, onError);
 };
+const animate = () => {
+  let dt = clock.getDelta();
+  // console.log('animation is running')
+  animationId = requestAnimationFrame(animate);
+  // cube.rotation.x += 0.1
+  renderer.render(scene, camera);
+  // animations.forEach(object => { // mettre à jour l'animation sur tous les objects cliquables
+  //     object.updateAnimation(dt);
+  //   });
+};
+
+function onLoaded(collada) {
+  let objects = collada.scene;
+  scene.add(objects);
+  let dt = clock.getElapsedTime();
+  console.log("Loading completed after " + dt + " s.");
+}
+
+var onProgress = function (data) {
+  if (data.lengthComputable) {
+    var percentComplete = (data.loaded / data.total) * 100;
+    console.log(Math.round(percentComplete, 2) + "% downloaded");
+  }
+};
+
+var onError = function (data) {
+  console.error(data);
+};
+
+const onClick = () => {
+  console.log("document cliqué");
+};
+
+onMounted(() => {
+  initScene();
+  animate();
+  document.addEventListener("click", onClick);
+});
+
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animationId);
+  document.removeEventListener("click", onClick);
+});
 </script>
 
-<style scoped>
-/* #scene {
-  width: 1000px;
-  height: 600px;
-} */
-</style>
+<template>
+  <div>
+    <canvas ref="canvas" />
+  </div>
+</template>
