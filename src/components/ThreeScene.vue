@@ -1,6 +1,56 @@
 <template>
   <div>
     <canvas ref="canvas" />
+    <div class="">
+      <div>
+        <h2 class="font-bold">Bracelet</h2>
+      </div>
+      <div class="flex gap-2">
+        <button @click="changeTexture('texture-cuir-blanc.jpg')">
+          Cuir Blanc
+        </button>
+        <button @click="changeTexture('texture-tissus-or.jpg')">
+          Tissu Or
+        </button>
+        <button @click="changeTexture('texture-tissus-marron.jpg')">
+          Tissu Marron
+        </button>
+      </div>
+    </div>
+    <div class="">
+      <div>
+        <h2 class="font-bold">Boitier Rond</h2>
+      </div>
+      <div class="flex gap-2">
+        <button @click="changeTextureBoitierRond('background_black01.png')">
+          Black 01
+        </button>
+        <button @click="changeTextureBoitierRond('background_black02.png')">
+          Black 02
+        </button>
+        <button @click="changeTextureBoitierRond('background_fluo01.png')">
+          Fluo
+        </button>
+        <button @click="changeTextureBoitierRond('background_mickey.png')">
+          Mickey
+        </button>
+        <button @click="changeTextureBoitierRond('background_white01.png')">
+          White 01
+        </button>
+        <button @click="changeTextureBoitierRond('background_white02.png')">
+          White 02
+        </button>
+        <button @click="changeTextureBoitierRond('background_white03.png')">
+          White 03
+        </button>
+        <button @click="changeTextureBoitierRond('background_white04.png')">
+          White 04
+        </button>
+        <button @click="changeTextureBoitierRond('background_white05.png')">
+          White 05
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -9,8 +59,6 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader.js";
 import * as THREE from "three";
-
-// Ajoutez cette ligne pour charger des textures
 import { TextureLoader } from "three/src/loaders/TextureLoader.js";
 
 const canvas = ref(null);
@@ -27,7 +75,11 @@ let aiguilleHeures,
   boitierCarre,
   iPierre,
   iBracelet,
-  iFermoir;
+  iFermoir,
+  iBouton;
+
+let currentTexture = "texture-cuir-blanc.jpg";
+let currentTextureBoitierRond = "background_black01.png";
 
 const initScene = () => {
   scene = new THREE.Scene();
@@ -49,16 +101,14 @@ const initScene = () => {
 
 const updateClockHands = () => {
   const now = new Date();
-  const hours = now.getHours() % 12; // Convertir en format 12 heures
+  const hours = now.getHours() % 12;
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
 
-  // Rotation des aiguilles en radians
   const hoursRotation = (hours + minutes / 60) * (Math.PI / 6);
   const minutesRotation = (minutes + seconds / 60) * (Math.PI / 30);
   const secondsRotation = seconds * (Math.PI / 30);
 
-  // Appliquer la rotation aux objets des aiguilles
   if (aiguilleHeures) aiguilleHeures.rotation.z = -hoursRotation;
   if (aiguilleMinutes) aiguilleMinutes.rotation.z = -minutesRotation;
   if (aiguilleSecondes) aiguilleSecondes.rotation.z = -secondsRotation;
@@ -66,15 +116,31 @@ const updateClockHands = () => {
 
 const animate = () => {
   let dt = clock.getDelta();
-  updateClockHands(); // Mettre à jour la rotation des aiguilles
+  updateClockHands();
   animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
+};
+
+const changeTexture = (texture) => {
+  currentTexture = texture;
+  // Charger la nouvelle texture et l'appliquer au matériau du bracelet
+  const textureLoader = new TextureLoader();
+  const newTexture = textureLoader.load(`public/images/${texture}`);
+  iBracelet.material.map = newTexture;
+  iBracelet.material.needsUpdate = true;
+};
+const changeTextureBoitierRond = (textureBoitierRond) => {
+  currentTextureBoitierRond = textureBoitierRond;
+  // Charger la nouvelle texture et l'appliquer au matériau du bracelet
+  const textureLoader = new TextureLoader();
+  const newTexture = textureLoader.load(`public/images/${textureBoitierRond}`);
+  boitierRond.material.map = newTexture;
+  boitierRond.material.needsUpdate = true;
 };
 
 function onLoaded(collada) {
   let objects = collada.scene;
 
-  // Récupérez les objets des aiguilles
   aiguilleHeures = objects.getObjectByName("aiguille_heures");
   aiguilleHeures.material = new THREE.MeshBasicMaterial({
     color: 0xf0f0f0,
@@ -87,49 +153,52 @@ function onLoaded(collada) {
   aiguilleSecondes.material = new THREE.MeshBasicMaterial({
     color: 0x00ff00,
   });
-  const boitierRond = objects.getObjectByName("boitier_rond");
-  boitierRond.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
-  const boitierCarre = objects.getObjectByName("boitier_carre");
-  boitierCarre.material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-
-  const iBouton = objects.getObjectByName("bouton");
-  iBouton.material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
+  boitierRond = objects.getObjectByName("boitier_rond");
+  // boitierRond.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const textureLoaderBoitierRond = new TextureLoader();
+  const textureBoitierRond = textureLoaderBoitierRond.load(
+    `public/images/${currentTextureBoitierRond}`
+  );
+  boitierRond.material = new THREE.MeshBasicMaterial({
+    map: textureBoitierRond,
   });
 
-  const iPierre = objects.getObjectByName("pierre");
+  boitierCarre = objects.getObjectByName("boitier_carre");
+  boitierCarre.material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+
+  iBouton = objects.getObjectByName("bouton");
+  iBouton.material = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+  });
+
+  iPierre = objects.getObjectByName("pierre");
   iPierre.material = new THREE.MeshBasicMaterial({
     color: 0x0000ff,
   });
 
-  const iBracelet = objects.getObjectByName("bracelet");
-  // Utilisez THREE.TextureLoader pour charger la texture
+  iBracelet = objects.getObjectByName("bracelet");
   const textureLoader = new TextureLoader();
-  const texture = textureLoader.load("public/images/texture-cuir-blanc.jpg");
-
-  // Appliquez la texture au matériau de l'objet "bracelet"
+  const texture = textureLoader.load(`public/images/${currentTexture}`);
   iBracelet.material = new THREE.MeshBasicMaterial({ map: texture });
 
-  const iFermoir = objects.getObjectByName("fermoir");
+  iFermoir = objects.getObjectByName("fermoir");
   iFermoir.material = new THREE.MeshBasicMaterial({
     color: 0xf000ff,
   });
-  // Ajoutez les objets des aiguilles à la scène
+
   scene.add(
     aiguilleHeures,
     aiguilleMinutes,
     aiguilleSecondes,
-    boitierCarre,
+    // boitierCarre,
     boitierRond,
+    iBouton,
     iPierre,
     iBracelet,
     iFermoir
   );
 
-  // ... (ajoutez le reste de votre code pour charger le modèle)
-
-  // Mettez à jour la position initiale de la caméra
   controls.target.set(0, 0, 0);
   camera.position.set(0, 0, 100);
   controls.update();

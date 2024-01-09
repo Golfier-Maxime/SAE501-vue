@@ -1,11 +1,13 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const path = require('path');
 
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -17,61 +19,30 @@ const db = new sqlite3.Database('./database/MontresDB.db', (err) => {
   }
 });
 
-app.post('/inscription', (req, res) => {
-  const { NomUser, MotDePasse } = req.body;
-
-  const query = 'INSERT INTO Utilisateurs (NomUser, MotDePasse) VALUES (?, ?)';
-  db.run(query, [NomUser, MotDePasse], function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    res.json({ UserID: this.lastID });
-  });
-});
-
-app.post('/connexion', (req, res) => {
-  const { NomUser, MotDePasse } = req.body;
-
-  const query = 'SELECT * FROM Utilisateurs WHERE NomUser = ?';
-  db.get(query, [NomUser], (err, Utilisateur) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-
-    // Créer un token JWT
-    const token = jwt.sign({ UserID: Utilisateur.UserID }, 'votre_clé_secrète', { expiresIn: '1h' });
-
-    res.json({ token, UserID: Utilisateur.UserID });
-  });
-});
-
-function verifierToken(req, res, next) {
-  const token = req.header('Authorization');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Accès non autorisé' });
-  }
-
-  jwt.verify(token, 'votre_clé_secrète', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'Token non valide' });
-    }
-
-    req.UserID = decoded.UserID;
-    next();
-  });
-}
-
 app.get('/', (req, res) => {
     res.redirect('/montres');
 });
 
 app.get('/montres', (req, res) => {
-    db.all('SELECT * FROM Montre', (err, rows) => {
+    db.all(
+      `SELECT
+        Montre.montreID,
+        Boitier.nom AS boitier_nom,
+        Boitier.prix AS boitier_prix,
+        Boitier.texture AS boitier_texture,
+        Pierre.nom AS pierre_nom,
+        Pierre.prix AS pierre_prix,
+        Bracelet.nom AS bracelet_nom,
+        Bracelet.prix AS bracelet_prix,
+        Bracelet.texture AS bracelet_texture
+      FROM
+        Montre
+      JOIN Boitier ON Montre.boitierID = Boitier.boitierID
+      JOIN Pierre ON Montre.pierreID = Pierre.pierreID
+      JOIN Bracelet ON Montre.braceletID = Bracelet.braceletID;`,
+     (err, rows) => {
         if (err) {
-            console.error('Error fetching recipes:', err.message);
+            console.error('Error fetching watches:', err.message);
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
@@ -129,9 +100,6 @@ app.get('/panier/:userID', (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         });
 });
-
-
-
 
 app.post('/panier/:userID/add/montre', (req, res) => {
     const { userID } = req.params;
@@ -238,60 +206,56 @@ app.post('/panier/:userID/remove/montre', (req, res) => {
     }
 });
 
-
-app.post('/register', (req, res) => {
+app.post('/inscription', (req, res) => {
   const { email, password } = req.body;
 
-  // Step 1: Insert user into the User table
-  const sqlInsertUser = `INSERT INTO User (email, password) VALUES (?, ?)`;
-  db.run(sqlInsertUser, [email, password], function (err) {
+  const query = 'INSERT INTO Utilisateurs (email, password) VALUES (?, ?)';
+  db.run(query, [email, password], function (err) {
     if (err) {
-      console.error('Error creating account:', err.message);
-      res.status(500).json({ error: 'Internal server error' });
-      return;
+      return res.status(500).json({ error: err.message });
     }
-    const userId = this.lastID;
-    // Step 2: Generate a unique identifier for panierID (e.g., auto-incremented value)
-    const panierID = userId;
-    // Step 3: Update panierID with the generated value
-    const sqlUpdatePanierID = `UPDATE User SET panierID = ? WHERE email = ?`;
-    db.run(sqlUpdatePanierID, [panierID, email], function (err) {
-      if (err) {
-        console.error('Error updating panierID:', err.message);
-        res.status(500).json({ error: 'Internal server error' });
-        return;
-      }
 
-      console.log(`Account created with email: ${email}, panierID: ${panierID}`);
-      res.json({ message: 'Account created successfully' });
-    });
+    res.json({ UserID: this.lastID });
   });
 });
 
+app.post('/connexion', (req, res) => {
+  const { userID } = req.body;
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
+  const query = 'SELECT * FROM Utilisateurs WHERE userID = ?';
+  db.get(query, [userID], (err, Utilisateur) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
 
-    // Check the User table for a matching email and password
-    const sql = `SELECT * FROM User WHERE email = ? AND password = ?`;
-    db.get(sql, [email, password], (err, row) => {
-        if (err) {
-            console.error('Error during login:', err.message);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
+    // Créer un token JWT
+    const token = jwt.sign({ UserID: Utilisateur.UserID }, 'votre_clé_secrète', { expiresIn: '1h' });
 
-        if (row) {
-            console.log('Login successful');
-            res.json({ message: 'Login successful' });
-            identifiant = email
-            test = password
-            
-        } else {
-            console.log('Invalid email or password');
-            res.status(401).json({ error: 'Invalid email or password' });
-        }
-    });
+    res.json({ token, UserID: Utilisateur.UserID });
+  });
+});
+
+// Middleware pour vérifier le token sur les requêtes protégées
+function verifierToken(req, res, next) {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ error: 'Accès non autorisé' });
+  }
+
+  jwt.verify(token, 'votre_clé_secrète', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token non valide' });
+    }
+
+    req.UserID = decoded.UserID;
+    next();
+  });
+}
+
+// Exemple de route protégée
+app.get('/exempleroute', verifierToken, (req, res) => {
+  res.json({ message: 'Route protégée accessible' });
 });
 
 app.listen(port, () => {

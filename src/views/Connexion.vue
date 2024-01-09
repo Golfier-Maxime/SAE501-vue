@@ -6,7 +6,7 @@
       <input v-model="inscriptionNom" required />
 
       <label>Mot de passe:</label>
-      <input type="password" v-model="inscriptionMotDePasse" required />
+      <input type="password" v-model="inscriptionpassword" required />
 
       <button type="submit">S'inscrire</button>
     </form>
@@ -17,7 +17,7 @@
       <input v-model="connexionNom" required />
 
       <label>Mot de passe:</label>
-      <input type="password" v-model="connexionMotDePasse" required />
+      <input type="password" v-model="connexionpassword" required />
 
       <button type="submit">Se connecter</button>
     </form>
@@ -31,22 +31,22 @@ export default {
   data() {
     return {
       inscriptionNom: "",
-      inscriptionMotDePasse: "",
+      inscriptionpassword: "",
       connexionNom: "",
-      connexionMotDePasse: "",
+      connexionpassword: "",
     };
   },
   methods: {
     inscrire() {
       axios
-        .post("http://localhost:3000/login", {
-          NomUser: this.inscriptionNom,
-          MotDePasse: this.inscriptionMotDePasse,
+        .post("http://localhost:3000/inscription", {
+          email: this.inscriptionNom,
+          password: this.inscriptionpassword,
         })
         .then((response) => {
           console.log(
             "Inscription réussie, ID utilisateur:",
-            response.data.UserID
+            response.data.userID
           );
         })
         .catch((error) => {
@@ -55,14 +55,14 @@ export default {
     },
     connecter() {
       axios
-        .post("http://localhost:3000/login", {
-          NomUser: this.connexionNom,
-          MotDePasse: this.connexionMotDePasse,
+        .post("http://localhost:3000/connexion", {
+          email: this.connexionNom,
+          password: this.connexionpassword,
         })
         .then((response) => {
           console.log(
             "Connexion réussie, ID utilisateur:",
-            response.data.UserID
+            response.data.userID
           );
           // Stocker le token dans le stockage local
           localStorage.setItem("token", response.data.token);
