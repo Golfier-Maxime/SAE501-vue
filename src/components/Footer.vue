@@ -2,7 +2,7 @@
 <template>
   <div class="pb-8 pt-8">
     <p class="text-black josefin text-[45px] lg:ml-[45px] text-center">
-      TiK•TaK
+      TiK•TaK2
     </p>
     <div class="flex justify-center lg:gap-16 gap-4 mt-6">
       <img src="../assets/img/discord.svg" />
