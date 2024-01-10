@@ -93,6 +93,31 @@
       </div>
       <input type="color" @input="handleColorChange" />
     </div>
+    <div class="mt-2">
+      <div>
+        <h2 class="font-bold">Type de Pierre Précieuse</h2>
+      </div>
+      <div class="flex gap-2">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changePierreColor('rubis')"
+        >
+          Rubis
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changePierreColor('diamant')"
+        >
+          Diamant
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changePierreColor('émeraude')"
+        >
+          Émeraude
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -116,6 +141,7 @@ let aiguilleHeures,
   boitierRond,
   boitierCarre,
   iPierre,
+  iPierre2,
   iBracelet,
   iFermoir,
   iBouton;
@@ -161,6 +187,26 @@ const animate = () => {
   updateClockHands();
   animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
+};
+
+const changePierreColor = (type) => {
+  let color;
+
+  switch (type) {
+    case "rubis":
+      color = 0xff0000; // Rouge
+      break;
+    case "diamant":
+      color = 0x0000ff; // Bleu
+      break;
+    case "émeraude":
+      color = 0x00ff00; // Vert
+      break;
+    default:
+      color = 0xffffff; // Blanc par défaut
+  }
+
+  if (iPierre) iPierre.material.color.set(color);
 };
 
 const handleColorChange = (event) => {
@@ -231,6 +277,17 @@ function onLoaded(collada) {
     color: 0x0000ff,
   });
 
+  let iPierre2 = iPierre.clone();
+  iPierre2.position.y -= 38;
+
+  let iPierre3 = iPierre.clone();
+  iPierre3.position.x -= 18.5;
+  iPierre3.position.y -= 18.75;
+
+  let iPierre4 = iPierre.clone();
+  iPierre4.position.x += 18.5;
+  iPierre4.position.y -= 18.75;
+
   iBracelet = objects.getObjectByName("bracelet");
   const textureLoader = new TextureLoader();
   const texture = textureLoader.load(`public/images/${currentTexture}`);
@@ -249,6 +306,9 @@ function onLoaded(collada) {
     boitierRond,
     iBouton,
     iPierre,
+    iPierre2,
+    iPierre3,
+    iPierre4,
     iBracelet,
     iFermoir
   );
