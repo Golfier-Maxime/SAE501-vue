@@ -1,55 +1,97 @@
 <template>
   <div>
     <canvas ref="canvas" />
-    <div class="">
+    <div class="mt-2">
       <div>
-        <h2 class="font-bold">Bracelet</h2>
+        <h2 class="font-bold">Texture du Bracelet :</h2>
       </div>
       <div class="flex gap-2">
-        <button @click="changeTexture('texture-cuir-blanc.jpg')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTexture('texture-cuir-blanc.jpg')"
+        >
           Cuir Blanc
         </button>
-        <button @click="changeTexture('texture-tissus-or.jpg')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTexture('texture-tissus-or.jpg')"
+        >
           Tissu Or
         </button>
-        <button @click="changeTexture('texture-tissus-marron.jpg')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTexture('texture-tissus-marron.jpg')"
+        >
           Tissu Marron
         </button>
       </div>
     </div>
-    <div class="">
+    <div class="mt-2">
       <div>
-        <h2 class="font-bold">Boitier Rond</h2>
+        <h2 class="font-bold">Texture du Boitier Rond</h2>
       </div>
       <div class="flex gap-2">
-        <button @click="changeTextureBoitierRond('background_black01.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_black01.png')"
+        >
           Black 01
         </button>
-        <button @click="changeTextureBoitierRond('background_black02.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_black02.png')"
+        >
           Black 02
         </button>
-        <button @click="changeTextureBoitierRond('background_fluo01.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_fluo01.png')"
+        >
           Fluo
         </button>
-        <button @click="changeTextureBoitierRond('background_mickey.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_mickey.png')"
+        >
           Mickey
         </button>
-        <button @click="changeTextureBoitierRond('background_white01.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_white01.png')"
+        >
           White 01
         </button>
-        <button @click="changeTextureBoitierRond('background_white02.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_white02.png')"
+        >
           White 02
         </button>
-        <button @click="changeTextureBoitierRond('background_white03.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_white03.png')"
+        >
           White 03
         </button>
-        <button @click="changeTextureBoitierRond('background_white04.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_white04.png')"
+        >
           White 04
         </button>
-        <button @click="changeTextureBoitierRond('background_white05.png')">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierRond('background_white05.png')"
+        >
           White 05
         </button>
       </div>
+    </div>
+    <div class="flex gap-2 my-2">
+      <div>
+        <h2 class="font-bold">Couleur du Fermoir</h2>
+      </div>
+      <input type="color" @input="handleColorChange" />
     </div>
   </div>
 </template>
@@ -121,6 +163,18 @@ const animate = () => {
   renderer.render(scene, camera);
 };
 
+const handleColorChange = (event) => {
+  const newColor = event.target.value;
+  changeFermoirColor(newColor);
+};
+const changeFermoirColor = (color) => {
+  // Convertir la couleur hexadécimale en décimal
+  const decimalColor = parseInt(color.slice(1), 16);
+
+  // Mettre à jour la couleur du matériau iFermoir
+  if (iFermoir) iFermoir.material.color.set(decimalColor);
+};
+
 const changeTexture = (texture) => {
   currentTexture = texture;
   // Charger la nouvelle texture et l'appliquer au matériau du bracelet
@@ -147,7 +201,7 @@ function onLoaded(collada) {
   });
   aiguilleMinutes = objects.getObjectByName("aiguille_minutes");
   aiguilleMinutes.material = new THREE.MeshBasicMaterial({
-    color: 0x0f0f0f,
+    color: 0xffffff,
   });
   aiguilleSecondes = objects.getObjectByName("aiguille_secondes");
   aiguilleSecondes.material = new THREE.MeshBasicMaterial({
@@ -184,7 +238,7 @@ function onLoaded(collada) {
 
   iFermoir = objects.getObjectByName("fermoir");
   iFermoir.material = new THREE.MeshBasicMaterial({
-    color: 0xf000ff,
+    color: 0x000000,
   });
 
   scene.add(
