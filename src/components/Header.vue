@@ -19,8 +19,8 @@ const menuVisible = ref(true);
           </router-link>
         </div>
         <div class="hover:underline underline-offset-8 decoration-Blue-Light-0">
-          <router-link to="/custom">
-            <p>Customisation</p>
+          <router-link to="/montre">
+            <p>Montre</p>
           </router-link>
         </div>
         <div
