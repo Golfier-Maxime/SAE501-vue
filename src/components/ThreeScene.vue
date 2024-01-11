@@ -118,6 +118,19 @@
         </button>
       </div>
     </div>
+    <div class="mt-2">
+      <div>
+        <h2 class="font-bold">Choix du boitier :</h2>
+      </div>
+      <div class="flex gap-2">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="toggleBoitierRond"
+        >
+          Boitier Rond / Carré
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -141,7 +154,6 @@ let aiguilleHeures,
   boitierRond,
   boitierCarre,
   iPierre,
-  iPierre2,
   iBracelet,
   iFermoir,
   iBouton;
@@ -187,6 +199,14 @@ const animate = () => {
   updateClockHands();
   animationId = requestAnimationFrame(animate);
   renderer.render(scene, camera);
+};
+
+let showBoitier = true; // Variable pour contrôler la visibilité des boitier
+
+const toggleBoitierRond = () => {
+  showBoitier = !showBoitier; // Inverser la visibilité du boitier
+  boitierRond.visible = showBoitier; // Mettre à jour la visibilité du boitierRond dans la scène
+  boitierCarre.visible = !showBoitier; // Mettre à jour la visibilité du boitierCarre dans la scène
 };
 
 const changePierreColor = (type) => {
@@ -243,11 +263,11 @@ function onLoaded(collada) {
 
   aiguilleHeures = objects.getObjectByName("aiguille_heures");
   aiguilleHeures.material = new THREE.MeshBasicMaterial({
-    color: 0xf0f0f0,
+    color: 0x888888,
   });
   aiguilleMinutes = objects.getObjectByName("aiguille_minutes");
   aiguilleMinutes.material = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
+    color: 0x666666,
   });
   aiguilleSecondes = objects.getObjectByName("aiguille_secondes");
   aiguilleSecondes.material = new THREE.MeshBasicMaterial({
@@ -266,6 +286,7 @@ function onLoaded(collada) {
 
   boitierCarre = objects.getObjectByName("boitier_carre");
   boitierCarre.material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+  boitierCarre.visible = false;
 
   iBouton = objects.getObjectByName("bouton");
   iBouton.material = new THREE.MeshBasicMaterial({
@@ -302,7 +323,7 @@ function onLoaded(collada) {
     aiguilleHeures,
     aiguilleMinutes,
     aiguilleSecondes,
-    // boitierCarre,
+    boitierCarre,
     boitierRond,
     iBouton,
     iPierre,
