@@ -1,3 +1,6 @@
--- INSERT INTO Montre(montreID, boitierID,pierreID,braceletID)
--- VALUES (0,0,0,0);
+-- INSERT INTO Panier(panierID, userID,montreID)
+-- VALUES (1,4,1);
+
+-- DELETE FROM Panier
+-- WHERE panierID = "1";
 

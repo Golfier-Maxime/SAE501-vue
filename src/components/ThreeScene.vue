@@ -87,6 +87,67 @@
         </button>
       </div>
     </div>
+    <div class="mt-2">
+      <div>
+        <h2 class="font-bold">Texture du Boitier Carre</h2>
+      </div>
+      <div class="flex gap-2">
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_black01.png')"
+        >
+          Black 01
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_black02.png')"
+        >
+          Black 02
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_fluo01.png')"
+        >
+          Fluo
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_mickey.png')"
+        >
+          Mickey
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_white01.png')"
+        >
+          White 01
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_white02.png')"
+        >
+          White 02
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_white03.png')"
+        >
+          White 03
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_white04.png')"
+        >
+          White 04
+        </button>
+        <button
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+          @click="changeTextureBoitierCarre('background_white05.png')"
+        >
+          White 05
+        </button>
+      </div>
+    </div>
     <div class="flex gap-2 my-2">
       <div>
         <h2 class="font-bold">Couleur du Fermoir</h2>
@@ -160,6 +221,7 @@ let aiguilleHeures,
 
 let currentTexture = "texture-cuir-blanc.jpg";
 let currentTextureBoitierRond = "background_black01.png";
+let currentTextureBoitierCarre = "background_black01.png";
 
 const initScene = () => {
   scene = new THREE.Scene();
@@ -257,6 +319,14 @@ const changeTextureBoitierRond = (textureBoitierRond) => {
   boitierRond.material.map = newTexture;
   boitierRond.material.needsUpdate = true;
 };
+const changeTextureBoitierCarre = (textureBoitierCarre) => {
+  currentTextureBoitierCarre = textureBoitierCarre;
+  // Charger la nouvelle texture et l'appliquer au matériau du bracelet
+  const textureLoader = new TextureLoader();
+  const newTexture = textureLoader.load(`public/images/${textureBoitierCarre}`);
+  boitierCarre.material.map = newTexture;
+  boitierCarre.material.needsUpdate = true;
+};
 
 function onLoaded(collada) {
   let objects = collada.scene;
@@ -285,7 +355,14 @@ function onLoaded(collada) {
   });
 
   boitierCarre = objects.getObjectByName("boitier_carre");
-  boitierCarre.material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+  // boitierCarre.material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+  const textureLoaderBoitierCarre = new TextureLoader();
+  const textureBoitierCarre = textureLoaderBoitierCarre.load(
+    `public/images/${currentTextureBoitierCarre}`
+  );
+  boitierCarre.material = new THREE.MeshBasicMaterial({
+    map: textureBoitierCarre,
+  });
   boitierCarre.visible = false;
 
   iBouton = objects.getObjectByName("bouton");

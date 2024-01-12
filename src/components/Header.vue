@@ -19,10 +19,16 @@ const menuVisible = ref(true);
           </router-link>
         </div>
         <div class="hover:underline underline-offset-8 decoration-Blue-Light-0">
-          <router-link to="/montre">
+          <router-link to="/montrelist">
             <p>Montre</p>
           </router-link>
         </div>
+        <div class="hover:underline underline-offset-8 decoration-Blue-Light-0">
+          <router-link to="/panier">
+            <p>Panier</p>
+          </router-link>
+        </div>
+
         <div
           class="mr-[45px] hover:underline underline-offset-8 decoration-Blue-Light-0"
         >
@@ -46,8 +52,8 @@ const menuVisible = ref(true);
       <RouterLink class="font-montserrat block py-2 px-4" to="/"
         >Accueil</RouterLink
       >
-      <RouterLink class="font-montserrat block py-2 px-4" to="/custom"
-        >Customisation</RouterLink
+      <RouterLink class="font-montserrat block py-2 px-4" to="/panier"
+        >Panier</RouterLink
       >
       <RouterLink class="font-montserrat block py-2 px-4" to="/connexion"
         >S'inscrire / Se connecter</RouterLink

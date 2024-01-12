@@ -10,7 +10,7 @@ import MontreVue from "@/components/Montre.vue";
       <ThreeSceneVue></ThreeSceneVue>
     </div>
     <div>
-      <MontreVue></MontreVue>
+      <!-- <MontreVue></MontreVue> -->
       <!-- <li v-for="watch in watches" :key="watch.montreID">
         {{ watch.boitier_nom }} - {{ watch.pierre_nom }} -
         {{ watch.bracelet_nom }}

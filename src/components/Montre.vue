@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="m-5">Liste des montres</h1>
+    <h1 class="m-5">Liste des Montres</h1>
     <ul class="m-5">
       <li
         class="border my-2 p-3"
@@ -11,6 +11,9 @@
         {{ watch.boitier_texture }} | {{ watch.pierre_nom }} |
         {{ watch.bracelet_texture }} |
         {{ watch.pierre_prix + watch.boitier_prix + watch.bracelet_prix }}
+        <RouterLink :to="`/montrelist/${watch.montreID}`"
+          >Voir la montre</RouterLink
+        >
       </li>
     </ul>
   </div>
