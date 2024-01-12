@@ -24,7 +24,7 @@ const menuVisible = ref(true);
           </router-link>
         </div>
         <div class="hover:underline underline-offset-8 decoration-Blue-Light-0">
-          <router-link to="/panier">
+          <router-link to="/panier/:id">
             <p>Panier</p>
           </router-link>
         </div>

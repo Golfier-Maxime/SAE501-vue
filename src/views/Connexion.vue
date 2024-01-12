@@ -1,7 +1,9 @@
 <template>
-  <main class="mx-2 my-2">
+  <main>
+    <h1>Page Login</h1>
+
     <div>
-      <h2 class="font-bold">Inscription</h2>
+      <h2>Inscription</h2>
 
       <form @submit.prevent="inscription" method="post">
         <input
@@ -11,7 +13,6 @@
           id="inscription-email"
           required
           placeholder="Email"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
         />
         <input
           v-model="inscriptionData.password"
@@ -20,19 +21,14 @@
           id="inscription-mdp"
           required
           placeholder="Mot de Passe"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
         />
 
-        <input
-          type="submit"
-          value="S'Inscrire"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
-        />
+        <input type="submit" value="Je m'inscris" />
       </form>
     </div>
 
     <div>
-      <h2 class="font-bold">Connexion</h2>
+      <h2>Connexion</h2>
 
       <form @submit.prevent="connexion" method="post">
         <input
@@ -42,7 +38,6 @@
           id="login-email"
           required
           placeholder="Email"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
         />
         <input
           v-model="loginData.password"
@@ -51,14 +46,9 @@
           id="login-mdp"
           required
           placeholder="Mot de Passe"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
         />
 
-        <input
-          type="submit"
-          value="Se Connecter"
-          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
-        />
+        <input type="submit" value="Je me connect" />
       </form>
     </div>
   </main>
@@ -67,6 +57,15 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useGlobalStore } from "/store/global.js";
+
+// Accéder au store global
+const globalStore = useGlobalStore();
+
+// Fonction pour définir le token
+const setToken = (token) => {
+  globalStore.setToken(token);
+};
 
 const inscriptionData = ref({
   email: "",
@@ -80,12 +79,14 @@ const loginData = ref({
 
 const connexion = async () => {
   try {
-    const secretKey = "g23jh2g4kjn1k5v2&!hskjf5n1";
     const response = await axios.post(
       "http://localhost:3000/connexion",
       loginData.value
     );
-    console.log(response.data); // Handle the response as needed
+    // localStorage.setItem('token', JSON.stringify(response.data.userId))
+    globalStore.setToken(response.data.userId);
+
+    console.log(response.data.userId); // Handle the response as needed
     // Optionally, you can reset the form data after successful login
     loginData.value.email = "";
     loginData.value.password = "";

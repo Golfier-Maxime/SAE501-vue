@@ -4,6 +4,7 @@ import ConnexionView from '../views/Connexion.vue'
 import PanierView from '../views/Panier.vue'
 import MontreListView from '../views/MontreList.vue'
 import MontreIDView from '../views/MontreIDView.vue'
+import ModifyView from '../views/Modifier.vue'
 
 
 
@@ -24,8 +25,9 @@ const router = createRouter({
     },
     {
       path: '/panier',
-      name: 'panier',
+      name: 'panierid',
       component: PanierView
+      
     },
     {
       path: '/montrelist',
@@ -37,6 +39,13 @@ const router = createRouter({
       name: 'montreid',
       props: true,
       component: MontreIDView
+    },
+    {
+      path: '/modify/:watchID',
+      name: 'modify',
+      component: ModifyView,
+      props: true,
+      
     },
   ]
 })

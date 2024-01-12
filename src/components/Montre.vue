@@ -11,9 +11,17 @@
         {{ watch.boitier_texture }} | {{ watch.pierre_nom }} |
         {{ watch.bracelet_texture }} |
         {{ watch.pierre_prix + watch.boitier_prix + watch.bracelet_prix }}
-        <RouterLink :to="`/montrelist/${watch.montreID}`"
+        <RouterLink
+          :to="`/montrelist/${watch.montreID}`"
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
           >Voir la montre</RouterLink
         >
+        <button
+          @click="deleteWatch(watch.montreID)"
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+        >
+          Supprimer la montre
+        </button>
       </li>
     </ul>
   </div>
@@ -29,15 +37,33 @@ export default {
     };
   },
   mounted() {
-    // Make a GET request to your Express server endpoint
-    axios
-      .get("http://localhost:3000/montres")
-      .then((response) => {
-        this.watches = response.data;
-      })
-      .catch((error) => {
-        console.error("Error fetching watches:", error.message);
-      });
+    this.fetchWatches();
+  },
+  methods: {
+    fetchWatches() {
+      axios
+        .get("http://localhost:3000/montres")
+        .then((response) => {
+          this.watches = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching watches:", error.message);
+        });
+    },
+    deleteWatch(montreID) {
+      // Make a DELETE request to your Express server endpoint
+      axios
+        .delete(`http://localhost:3000/montres/${montreID}`)
+        .then(() => {
+          // Remove the deleted watch from the local list
+          this.watches = this.watches.filter(
+            (watch) => watch.montreID !== montreID
+          );
+        })
+        .catch((error) => {
+          console.error("Error deleting watch:", error.message);
+        });
+    },
   },
 };
 </script>
