@@ -62,7 +62,7 @@
           class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
         />
       </form>
-      <p>{{ response.data.userId }}</p>
+      <!-- <p>{{ response.data.userId }}</p> -->
     </div>
   </main>
 </template>
