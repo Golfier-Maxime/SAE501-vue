@@ -58,6 +58,24 @@ app.get('/montres', (req, res) => {
     });
 });
 
+app.delete('/montres/:montreID', (req, res) => {
+  const montreID = req.params.montreID;
+
+  db.run(
+    'DELETE FROM Montre WHERE montreID = ?',
+    [montreID],
+    (err) => {
+      if (err) {
+        console.error('Error deleting watch:', err.message);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+
+      res.json({ message: 'Watch deleted successfully' });
+    }
+  );
+});
+
 app.get('/rawmontres', (req, res) => {
     db.all(
       `SELECT * from Montre;`,

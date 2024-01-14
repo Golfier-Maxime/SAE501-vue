@@ -4,8 +4,8 @@ import CreationMontre from "@/components/CreationMontre.vue";
 </script>
 
 <template>
-  <MontreList></MontreList>
   <CreationMontre></CreationMontre>
+  <MontreList></MontreList>
 </template>
 
 <style></style>

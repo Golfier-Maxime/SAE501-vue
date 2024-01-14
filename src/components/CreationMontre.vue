@@ -1,10 +1,10 @@
 <template>
   <div class="mx-4 my-4">
-    <h1>Creer votre montre</h1>
+    <h1 class="m-5 font-bold text-3xl">Creer votre montre</h1>
 
-    <form @submit.prevent="addWatch">
+    <form @submit.prevent="addWatch" class="flex gap-3 mx-5">
       <!-- Champ pour le boitier -->
-      <label for="BoitierID">Boitier :</label>
+      <label for="BoitierID" class="self-center text-lg">Boitier :</label>
       <select
         v-model="newBoitierID"
         required
@@ -22,7 +22,7 @@
       <br />
 
       <!-- Champ pour la pierre -->
-      <label for="PierreID">Pierre :</label>
+      <label for="PierreID" class="self-center text-lg">Pierre :</label>
       <select
         v-model="newPierreID"
         required
@@ -40,7 +40,7 @@
       <br />
 
       <!-- Champ pour le bracelet -->
-      <label for="BraceletID">Bracelet :</label>
+      <label for="BraceletID" class="self-center text-lg">Bracelet :</label>
       <select
         v-model="newBraceletID"
         required
@@ -59,7 +59,7 @@
 
       <button
         type="submit"
-        class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+        class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg text-lg"
       >
         Creer la montre
       </button>

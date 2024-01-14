@@ -1,12 +1,13 @@
 <template>
   <main>
-    <h1>Page Login</h1>
+    <h1 class="m-5 font-bold text-3xl">Page de Connexion / Inscription</h1>
 
     <div>
-      <h2>Inscription</h2>
+      <h2 class="m-5 font-bold text-3xl">Inscription</h2>
 
-      <form @submit.prevent="inscription" method="post">
+      <form @submit.prevent="inscription" method="post" class="m-5">
         <input
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
           v-model="inscriptionData.email"
           type="text"
           name="email"
@@ -15,6 +16,7 @@
           placeholder="Email"
         />
         <input
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
           v-model="inscriptionData.password"
           type="password"
           name="mdp"
@@ -23,15 +25,20 @@
           placeholder="Mot de Passe"
         />
 
-        <input type="submit" value="Je m'inscris" />
+        <input
+          type="submit"
+          value="Inscription"
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+        />
       </form>
     </div>
 
     <div>
-      <h2>Connexion</h2>
+      <h2 class="m-5 font-bold text-3xl">Connexion</h2>
 
-      <form @submit.prevent="connexion" method="post">
+      <form @submit.prevent="connexion" method="post" class="m-5">
         <input
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
           v-model="loginData.email"
           type="text"
           name="email"
@@ -40,6 +47,7 @@
           placeholder="Email"
         />
         <input
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
           v-model="loginData.password"
           type="password"
           name="mdp"
@@ -48,8 +56,13 @@
           placeholder="Mot de Passe"
         />
 
-        <input type="submit" value="Je me connect" />
+        <input
+          type="submit"
+          value="Connexion"
+          class="border-black border-2 px-2 py-1 mx-2 my-1 rounded-lg"
+        />
       </form>
+      <p>{{ response.data.userId }}</p>
     </div>
   </main>
 </template>
